@@ -1,10 +1,13 @@
+import logging
 import sys
+import functools
 
 import rich
 from rich.console import Console
 
 from chroma.domain.model import OutputFormat
 
+log = logging.getLogger(__file__)
 
 def build_view(output_format):
     if output_format is None:
@@ -15,7 +18,9 @@ def build_view(output_format):
         case OutputFormat.TABLE:
             view = Console().print
         case OutputFormat.DEFAULT:
-            view = lambda x: rich.print(x, file=sys.stdout)
+            view = functools.partial(rich.print, file=sys.stdout)
+            view.__name__ = f"rich.{rich.print.__name__}"
         case _:
             view = print
+    log.debug(f"Built {view.__name__} view")
     return view

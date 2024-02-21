@@ -1,4 +1,5 @@
 import dataclasses
+import logging
 
 import pandas as pd
 from rich.table import Table
@@ -6,6 +7,7 @@ from rich.table import Table
 from chroma.domain import model
 from chroma.domain.model import OutputFormat
 
+log = logging.getLogger(__file__)
 
 def present_as_table(colour: model.Colour):
     table = Table()
@@ -40,10 +42,12 @@ def build_presenter(output_format: str | OutputFormat):
 
     match output_format:
         case OutputFormat.TABLE:
-            return present_as_table
+            presenter = present_as_table
         case OutputFormat.JSON:
-            return present_as_json
+            presenter = present_as_json
         case OutputFormat.HTML:
-            return present_as_html
+            presenter = present_as_html
         case OutputFormat.DEFAULT | _:
-            return present_asis
+            presenter = present_asis
+    log.debug(f"Built {presenter.__name__} presenter")
+    return presenter

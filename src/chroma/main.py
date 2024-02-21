@@ -2,8 +2,6 @@ from chroma import config, adaptors, services
 from chroma.ui import presenters, views
 
 
-# TODO: add logging
-
 def name(output_format=None, view=None, seed: int = None):
     colour_repository = adaptors.get_repository(config.get_datasource_type())
     data = colour_repository.get()
